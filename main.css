@@ -13,3 +13,8 @@ body {
     margin: 0;
     padding: 0;
 }
+
+.tabs {
+    float: left;
+    padding: 8px;
+}
