@@ -8,6 +8,14 @@ body {
     background-color: #f6f6f6;
 }
 
+#navigation {
+    width: 100%;
+}
+
+#body {
+    width: 100%;
+}
+
 #navbar {
     list-style-type: none;
     margin: 0;
