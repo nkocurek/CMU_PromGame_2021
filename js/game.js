@@ -414,8 +414,8 @@ function Door(config,level){
 		ctx.scale(0.7,0.7);
 
 		var f = Math.floor(self.frame);
-		var sw = 68;
-		var sh = 96;
+		var sw = 68*screenScale;
+		var sh = 96*screenScale;
 		var sx = (f*sw) % images.door.width;
 		var sy = sh*Math.floor((f*sw)/images.door.width);
 		var dx = -34;
@@ -427,9 +427,9 @@ function Door(config,level){
 	self.drawShadow = function(ctx){
 
 		ctx.save();
-		ctx.translate(self.x,self.y);
-		ctx.scale(0.7,0.7);
-		ctx.scale(1,0.2);
+		ctx.translate(self.x-4, self.y-10);
+		ctx.scale(0.5, 0.5);
+		ctx.scale(1, 0.2);
 		ctx.beginPath();
 		ctx.arc(0, 0, 30, 0, Math.TAU, false);
 		ctx.fillStyle = 'rgba(100,100,100,0.4)';
@@ -569,7 +569,6 @@ function Peep(config,level){
 		self.bounce += bounceVel;
 		bounceVel += (1-self.bounce)*0.2;
 		bounceVel *= 0.9;
-
 	};
 
 	self.bounce = 1;
@@ -598,7 +597,7 @@ function Peep(config,level){
 		ctx.scale(self.direction,1);///anim.stretch, anim.stretch);
 		ctx.scale(1/self.bounce, self.bounce);
 		//ctx.rotate(anim.rotate*0.15);
-		ctx.drawImage(images.peep,-25,-100,50,100);
+		ctx.drawImage(images.peep,-25*screenScale,-100*screenScale,50*screenScale,100*screenScale);
 		ctx.restore();
 
 	};
@@ -944,22 +943,24 @@ window.INTRO_LEVEL = {
 
 };
 
+var screenScale = 5.0/6;
+
 window.LEVEL_CONFIG = [
 
 	// P
 	{
 		canvas:document.getElementById("canvas_1"),
-		player:{ x:25, y:275 },
-		door:{ x:30, y:190 },
+		player:{ x:25*screenScale, y:275*screenScale },
+		door:{ x:30*screenScale, y:190*screenScale },
 		keys: [
-			{ x:150, y:100 },
-			{ x:50, y:40 }
+			{ x:150*screenScale, y:100*screenScale },
+			{ x:50*screenScale, y:40*screenScale }
 		],
 		circles: [
-			{x:80,y:90,radius:50},
-			{x:115,y:200,radius:55},
-			{x:220,y:250,radius:75},
-			{x:260,y:20,radius:100},
+			{ x:80*screenScale, y:90*screenScale, radius:50*screenScale },
+			{ x:115*screenScale, y:200*screenScale, radius:55*screenScale },
+			{ x:220*screenScale, y:250*screenScale, radius:75*screenScale },
+			{ x:260*screenScale, y:20*screenScale, radius:100*screenScale },
 		],
 		rectangles: [],
 		countdown:100
@@ -968,19 +969,19 @@ window.LEVEL_CONFIG = [
 	// R
 	{
 		canvas:document.getElementById("canvas_2"),
-		player:{ x:40, y:275 },
-		door:{ x:200, y:275},
+		player:{ x:40*screenScale, y:275*screenScale },
+		door:{ x:200*screenScale, y:275*screenScale },
 		keys: [
-			{ x:175, y:110 },
-			{ x:50, y:55 }
+			{ x:175*screenScale, y:110*screenScale },
+			{ x:50*screenScale, y:55*screenScale }
 		],
 		circles: [
-			{x:100,y:90,radius:50},
-			{x:130,y:175,radius:15},
-			{x:160,y:180,radius:20},
-			{x:200,y:185,radius:25},
-			{x:250,y:190,radius:30},
-			{x:310,y:195,radius:40},
+			{ x:100*screenScale, y:90*screenScale, radius:50*screenScale },
+			{ x:130*screenScale, y:175*screenScale, radius:15*screenScale },
+			{ x:160*screenScale, y:180*screenScale, radius:20*screenScale },
+			{ x:200*screenScale, y:185*screenScale, radius:25*screenScale },
+			{ x:250*screenScale, y:190*screenScale, radius:30*screenScale },
+			{ x:310*screenScale, y:195*screenScale, radius:40*screenScale },
 		],
 		rectangles: [],
 		countdown:150
@@ -989,14 +990,14 @@ window.LEVEL_CONFIG = [
 	// O
 	{
 		canvas:document.getElementById("canvas_3"),
-		player:{ x:150, y:250 },
-		door:{ x:150, y:280 },
+		player:{ x:150*screenScale, y:250*screenScale },
+		door:{ x:150*screenScale, y:280*screenScale },
 		keys: [
-			{ x:50, y:100 },
-			{ x:250, y:100 }
+			{ x:50*screenScale, y:100*screenScale },
+			{ x:250*screenScale, y:100*screenScale }
 		],
 		circles: [
-			{ x:150, y:150, radius:100 }
+			{ x:150*screenScale, y:150*screenScale, radius:100*screenScale }
 		],
 		rectangles: [],
 		countdown: 130
@@ -1005,17 +1006,19 @@ window.LEVEL_CONFIG = [
 	// M
 	{
 		canvas:document.getElementById("canvas_4"),
-		player:{ x:25, y:275 },
-		door:{ x:275, y:275 },
+		player:{ x:25*screenScale, y:275*screenScale },
+		door:{ x:275*screenScale, y:275*screenScale },
 		keys: [
-			{ x:150, y:155 }
+			{ x:150*screenScale, y:155*screenScale }
 		],
 		circles: [
-			{ x:90, y:120, radius: 25 },
-			{ x:110, y:180, radius: 40 },
-			{ x:150, y:180, radius:10, invisible:true},
-			{ x:190, y:180, radius: 40 },
-			{ x:210, y:120, radius: 25 }
+			{ x:90*screenScale, y:120*screenScale, radius: 25*screenScale },
+			{ x:100*screenScale, y:140*screenScale, radius:10*screenScale, invisible:true},
+			{ x:110*screenScale, y:180*screenScale, radius: 40*screenScale },
+			{ x:150*screenScale, y:180*screenScale, radius:10*screenScale, invisible:true},
+			{ x:190*screenScale, y:180*screenScale, radius: 40*screenScale },
+			{ x:200*screenScale, y:140*screenScale, radius:10*screenScale, invisible:true},
+			{ x:210*screenScale, y:120*screenScale, radius: 25*screenScale }
 		],
 		rectangles: [],
 		countdown:120
@@ -1024,18 +1027,18 @@ window.LEVEL_CONFIG = [
 	// ?
 	{
 		canvas:document.getElementById("canvas_5"),
-		player:{ x:70, y:100 },
-		door:{ x:150, y:275 },
+		player:{ x:70*screenScale, y:100*screenScale },
+		door:{ x:150*screenScale, y:275*screenScale },
 		keys: [
-			{ x:150, y:40 },
-			{ x:225, y:100 }
+			{ x:150*screenScale, y:40*screenScale },
+			{ x:225*screenScale, y:100*screenScale }
 		],
 		circles: [
-			{ x:150, y:100, radius:60 }
+			{ x:150*screenScale, y:100*screenScale, radius:60*screenScale }
 		],
 		rectangles: [
-			{ x:0, y:170, width:140, height:20 },
-			{ x:160, y:170, width:140, height:20 }
+			{ x:0*screenScale, y:170*screenScale, width:140*screenScale, height:20*screenScale },
+			{ x:160*screenScale, y:170*screenScale, width:140*screenScale, height:20*screenScale }
 		],
 		countdown:85
 	}
