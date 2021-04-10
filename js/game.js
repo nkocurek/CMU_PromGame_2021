@@ -539,17 +539,17 @@ function Peep(config,level){
 			var dbottom = self.y - (ry + rect.height/2);
 			var dleft = self.x - (rx - rect.width/2);
 			var dright = self.x - (rx + rect.width/2);
-			if(rx - rect.width/2 < self.x && self.x < rx + rect.width/2) {
+			if(rx - rect.width/2 <= self.x && self.x <= rx + rect.width/2) {
 				//Collide from top
 				if(dtop > 0 && self.y < ry) {
-					self.y -= 5;
+					self.y -= 7;
 				}
 				//Collide from bottom
 				if(dbottom < 0 && self.y > ry) {
-					self.y += 5;
+					self.y += 7;
 				}
 			}
-			if(ry - rect.height/2 < self.y && self.y < ry + rect.height/2) {
+			if(ry - rect.height/2 <= self.y && self.y <= ry + rect.height/2) {
 				//Collide from left
 				if(dleft > 0 && self.x < rx) {
 					self.x -= 5;
@@ -1037,8 +1037,8 @@ window.LEVEL_CONFIG = [
 			{ x:150*screenScale, y:100*screenScale, radius:60*screenScale }
 		],
 		rectangles: [
-			{ x:0*screenScale, y:170*screenScale, width:140*screenScale, height:20*screenScale },
-			{ x:160*screenScale, y:170*screenScale, width:140*screenScale, height:20*screenScale }
+			{ x:0*screenScale, y:170*screenScale, width:140*screenScale, height:30*screenScale },
+			{ x:160*screenScale, y:170*screenScale, width:140*screenScale, height:30*screenScale }
 		],
 		countdown:85
 	}
