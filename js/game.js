@@ -1021,7 +1021,7 @@ window.LEVEL_CONFIG = [
 			{ x:210*screenScale, y:120*screenScale, radius: 25*screenScale }
 		],
 		rectangles: [],
-		countdown:120
+		countdown:100
 	},
 
 	// ?
