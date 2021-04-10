@@ -716,7 +716,7 @@ window.onload = function(){
 				rewindFrame++;
 				if(rewindFrame>=rewindLevel.frames.length){
 					CURRENT_LEVEL++;
-					if(CURRENT_LEVEL<4){
+					if(CURRENT_LEVEL<5){
 						startPlayback();
 					}else{
 
@@ -767,7 +767,7 @@ function next(){
 	}else{
 		level = null;
 		STAGE = 2;
-		CURRENT_LEVEL = 3;
+		CURRENT_LEVEL = 4;
 		startRewind();
 
 
@@ -808,14 +808,7 @@ function iHeartYou(){
 		vtext.style.letterSpacing = "3px";
 	},10);
 
-	// After 9 seconds, swipe down to CREDITS.
-	// No replay. Frick it.
-	// setTimeout(function(){
-	// 	document.getElementById("whole_container").style.top = "-200%";
-	// },7300);
-	// setTimeout(function(){
-	// 	yourMessage.focus();
-	// },8500);
+	// No credits. We made this. Frick it.
 
 }
 
@@ -969,49 +962,44 @@ window.LEVEL_CONFIG = [
 			{x:260,y:20,radius:100},
 		],
 		rectangles: [],
-		countdown:1000
+		countdown:100
 	},
 
 	// R
 	{
 		canvas:document.getElementById("canvas_2"),
-		player:{ x:25, y:275 },
+		player:{ x:40, y:275 },
 		door:{ x:200, y:275},
 		keys: [
-			{ x:150, y:100 },
-			{ x:50, y:40 }
+			{ x:175, y:110 },
+			{ x:50, y:55 }
 		],
 		circles: [
 			{x:100,y:90,radius:50},
-			{x:50,y:220,radius:30},
-			{x:50,y:200,radius:15},
-			{x:70,y: 175,radius:15},
-			{x:150,y:180,radius:20},
+			{x:130,y:175,radius:15},
+			{x:160,y:180,radius:20},
 			{x:200,y:185,radius:25},
 			{x:250,y:190,radius:30},
+			{x:310,y:195,radius:40},
 		],
 		rectangles: [],
-		countdown:1000
+		countdown:150
 	},
 
 	// O
 	{
 		canvas:document.getElementById("canvas_3"),
 		player:{ x:150, y:250 },
-		door:{ x:150, y:249 },
+		door:{ x:150, y:280 },
 		keys: [
-			{ x:150, y:75 }
+			{ x:50, y:100 },
+			{ x:250, y:100 }
 		],
 		circles: [
-			{x:100,y:100,radius:50},
-			{x:200,y:100,radius:50},
-			{x:150,y:100,radius:10,invisible:true},
-			{x:0,y:300,radius:145},
-			{x:300,y:300,radius:145}
+			{ x:150, y:150, radius:100 }
 		],
 		rectangles: [],
-		// SUPER HACK - for level 2, change timer so it's impossible to beat if you go BACKWARDS.
-		countdown: 200
+		countdown: 130
 	},
 
 	// M
@@ -1031,6 +1019,25 @@ window.LEVEL_CONFIG = [
 		],
 		rectangles: [],
 		countdown:120
+	},
+
+	// ?
+	{
+		canvas:document.getElementById("canvas_5"),
+		player:{ x:70, y:100 },
+		door:{ x:150, y:275 },
+		keys: [
+			{ x:150, y:40 },
+			{ x:225, y:100 }
+		],
+		circles: [
+			{ x:150, y:100, radius:60 }
+		],
+		rectangles: [
+			{ x:0, y:170, width:140, height:20 },
+			{ x:160, y:170, width:140, height:20 }
+		],
+		countdown:85
 	}
 ];
 

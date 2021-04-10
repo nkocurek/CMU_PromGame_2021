@@ -33,12 +33,13 @@ canvas{
 #screen_two{
 	background:#333;
 }
+
 #screen_three{
 	background:#fff;
 
 }
 #canvas_container{
-	width: 1260px;
+	width: 1580px;
 	height:380px;
 	position: absolute;
 	margin:auto;
