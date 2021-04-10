@@ -892,7 +892,7 @@ window.INTRO_LEVEL = {
 
 window.LEVEL_CONFIG = [
 
-	// I
+	// P
 	{
 		canvas:document.getElementById("canvas_1"),
 		player:{ x:150, y:175 },
@@ -905,7 +905,7 @@ window.LEVEL_CONFIG = [
 		countdown:90
 	},
 
-	// HEART
+	// R
 	{
 		canvas:document.getElementById("canvas_2"),
 		player:{ x:150, y:250 },
@@ -922,7 +922,7 @@ window.LEVEL_CONFIG = [
 		countdown: 200
 	},
 
-	// U
+	// O
 	{
 		canvas:document.getElementById("canvas_3"),
 		player:{ x:30, y:75 },
@@ -932,7 +932,19 @@ window.LEVEL_CONFIG = [
 			{x:150,y:150,radius:115}
 		],
 		countdown: 130
-	}
+	},
 
+	// M
+	{
+		canvas:document.getElementById("canvas_4"),
+		player:{ x:150, y:175 },
+		door:{ x:150, y:75 },
+		key:{ x:150, y:275 },
+		circles: [
+			{x:0,y:150,radius:100},
+			{x:300,y:150,radius:100}
+		],
+		countdown:90
+	}
 ];
 
