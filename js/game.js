@@ -800,7 +800,7 @@ function iHeartYou(){
 	if(window.location.hash){
 		vtext.textContent = encryptString(decodeURIComponent(window.location.hash).substring(1));
 	}else{
-		vtext.textContent = "wanna go to prom with me?";
+		vtext.innerHTML = "carolyn wanna go to prom with me?<br/>(in spirit)";
 	}
 
 	setTimeout(function(){
