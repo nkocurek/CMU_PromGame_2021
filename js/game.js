@@ -35,7 +35,8 @@ function Level(config,isIntro){
 	self.circles = config.circles;
 	self.rectangles = config.rectangles;
 	self.player = new Peep(config.player,self);
-	self.key = new DoorKey(config.key, self);
+	self.keys = [];
+	config.keys.forEach(key => { self.keys.push(new DoorKey(key, self)); });
 	self.door = new Door(config.door, self);
 	self.clock = new Clock(config.countdown, self);
 
@@ -55,12 +56,14 @@ function Level(config,isIntro){
 	self.pathContext = self.pathCanvas.getContext('2d');
 	self.DRAW_PATH = false;
 
-	self.keyCollected = false;
+	self.keysCollected = 0;
 	self.update = function(){
 
 		self.player.update();
-		self.key.update();
-
+		for(var i=0;i<self.keys.length;i++){
+			self.keys[i].update();
+		}
+		
 		var output = self.door.update();
 		if(self.isIntro){
 			STAGE = 1;
@@ -92,7 +95,9 @@ function Level(config,isIntro){
 		// Clear
 		if(self.isIntro){
 			ctx.clearRect(self.player.x-100,self.player.y-100,200,200);
-			ctx.clearRect(self.key.x-100,self.key.y-100,200,200);
+			self.keys.forEach(key => {
+				ctx.clearRect(key.x-100,key.y-100,200,200);
+			});
 			ctx.clearRect(self.door.x-100,self.door.y-100,200,200);
 		}else{
 			ctx.fillStyle = "#fff";
@@ -100,7 +105,8 @@ function Level(config,isIntro){
 		}
 
 		// Draw shadows
-		var objects = [self.player,self.key,self.door];
+
+		var objects = [self.player,self.door].concat(self.keys);
 		for(var i=0;i<objects.length;i++){
 			objects[i].drawShadow(ctx);
 		}
@@ -185,12 +191,12 @@ function Level(config,isIntro){
 				direction: self.player.direction
 			},
 			key:{
-				hover: self.key.hover
+				hover: self.keys[0].hover
 			},
 			door:{
 				frame: self.door.frame
 			},
-			keyCollected: self.keyCollected
+			keysCollected: self.keysCollected
 		};
 
 		self.frames.push(frame);
@@ -209,14 +215,14 @@ function Level(config,isIntro){
 		self.player.frame = frame.player.frame;
 		self.player.direction = frame.player.direction;
 
-		self.key.hover = frame.key.hover;
+		self.keys[0].hover = frame.key.hover;
 		self.door.frame = frame.door.frame;
 
-		self.keyCollected = frame.keyCollected;
-		if(self.keyCollected && !lastCollected && STAGE==3){
+		self.keysCollected = frame.keysCollected;
+		if(self.keysCollected >= self.keys.length && !lastCollected && STAGE==3){
 			createjs.Sound.play("unlock");
 		}
-		lastCollected = self.keyCollected;
+		lastCollected = self.keysCollected;
 
 		self.NO_CLOCK = true;
 		self.draw();
@@ -252,7 +258,7 @@ function Clock(countdown,level){
 		// SUBTLY CHEAT - IT'S IMPOSSIBLE TO SOLVE IT THE WRONG WAY
 
 		if(CURRENT_LEVEL==1){
-			if(level.keyCollected){
+			if(level.keysCollected >= level.keys.length){
 				if(!exitSide && Math.abs(level.player.x-150)>30){
 					exitSide = (level.player.x<150) ? "left" : "right";
 				}
@@ -304,20 +310,23 @@ function DoorKey(config,level){
 	self.x = config.x;
 	self.y = config.y;
 
+	self.collected = false;
+
 	self.hover = 0;
 	self.update = function(){
 
-		if(level.keyCollected) return;
+		if(self.collected) return;
 
 		self.hover += 0.07;
 
 		var dx = self.x-level.player.x;
 		var dy = self.y-level.player.y;
 		var distance = Math.sqrt(dx*dx/4 + dy*dy);
-		if(distance<5){
-			level.keyCollected = true;
+		if(distance<10){
+			self.collected = true;
+			level.keysCollected++;
 
-			createjs.Sound.play("unlock");
+			// createjs.Sound.play("unlock");
 
 		}
 
@@ -325,7 +334,7 @@ function DoorKey(config,level){
 
 	self.draw = function(ctx){
 
-		if(level.keyCollected) return;
+		if(self.collected) return;
 
 		ctx.save();
 		ctx.translate(self.x, self.y-20-Math.sin(self.hover)*5);
@@ -336,7 +345,7 @@ function DoorKey(config,level){
 	};
 	self.drawShadow = function(ctx){
 
-		if(level.keyCollected) return;
+		if(self.collected) return;
 
 		ctx.save();
 		ctx.translate(self.x,self.y);
@@ -364,11 +373,11 @@ function Door(config,level){
 
 	self.update = function(){
 
-		if(level.keyCollected && self.frame<10){
+		if(level.keysCollected >= level.keys.length && self.frame<10){
 			self.frame += 0.5;
 		}
 
-		if(level.keyCollected){
+		if(level.keysCollected >= level.keys.length){
 			var dx = self.x-level.player.x;
 			var dy = self.y-level.player.y;
 			var distance = Math.sqrt(dx*dx/25 + dy*dy);
@@ -792,7 +801,7 @@ function iHeartYou(){
 	if(window.location.hash){
 		vtext.textContent = encryptString(decodeURIComponent(window.location.hash).substring(1));
 	}else{
-		vtext.textContent = "a lovely message from me to you <3";
+		vtext.textContent = "wanna go to prom with me?";
 	}
 
 	setTimeout(function(){
@@ -801,12 +810,12 @@ function iHeartYou(){
 
 	// After 9 seconds, swipe down to CREDITS.
 	// No replay. Frick it.
-	setTimeout(function(){
-		document.getElementById("whole_container").style.top = "-200%";
-	},7300);
-	setTimeout(function(){
-		yourMessage.focus();
-	},8500);
+	// setTimeout(function(){
+	// 	document.getElementById("whole_container").style.top = "-200%";
+	// },7300);
+	// setTimeout(function(){
+	// 	yourMessage.focus();
+	// },8500);
 
 }
 
@@ -932,13 +941,13 @@ window.INTRO_LEVEL = {
 	canvas:document.getElementById("canvas_intro"),
 	player:{ x:cx-150, y:cy-30 },
 	door:{ x:cx+150, y:cy-30 },
-	key:{ x:cx, y:cy+125 },
+	keys: [
+		{ x:cx, y:cy+125 }
+	],
 	circles: [
 		{x:cx,y:cy,radius:120,invisible:true}
 	],
-	rectangles: [
-		{}
-	]
+	rectangles: []
 
 };
 
@@ -947,25 +956,52 @@ window.LEVEL_CONFIG = [
 	// P
 	{
 		canvas:document.getElementById("canvas_1"),
-		player:{ x:150, y:175 },
-		door:{ x:150, y:75 },
-		key:{ x:150, y:275 },
+		player:{ x:25, y:275 },
+		door:{ x:30, y:190 },
+		keys: [
+			{ x:150, y:100 },
+			{ x:50, y:40 }
+		],
 		circles: [
-			{x:0,y:150,radius:100},
-			{x:300,y:150,radius:100}
+			{x:80,y:90,radius:50},
+			{x:115,y:200,radius:55},
+			{x:220,y:250,radius:75},
+			{x:260,y:20,radius:100},
 		],
-		rectangles: [
-			{}
-		],
-		countdown:90
+		rectangles: [],
+		countdown:1000
 	},
 
 	// R
 	{
 		canvas:document.getElementById("canvas_2"),
+		player:{ x:25, y:275 },
+		door:{ x:200, y:275},
+		keys: [
+			{ x:150, y:100 },
+			{ x:50, y:40 }
+		],
+		circles: [
+			{x:100,y:90,radius:50},
+			{x:50,y:220,radius:30},
+			{x:50,y:200,radius:15},
+			{x:70,y: 175,radius:15},
+			{x:150,y:180,radius:20},
+			{x:200,y:185,radius:25},
+			{x:250,y:190,radius:30},
+		],
+		rectangles: [],
+		countdown:1000
+	},
+
+	// O
+	{
+		canvas:document.getElementById("canvas_3"),
 		player:{ x:150, y:250 },
 		door:{ x:150, y:249 },
-		key:{ x:150, y:75 },
+		keys: [
+			{ x:150, y:75 }
+		],
 		circles: [
 			{x:100,y:100,radius:50},
 			{x:200,y:100,radius:50},
@@ -973,41 +1009,28 @@ window.LEVEL_CONFIG = [
 			{x:0,y:300,radius:145},
 			{x:300,y:300,radius:145}
 		],
-		rectangles: [
-			{}
-		],
+		rectangles: [],
 		// SUPER HACK - for level 2, change timer so it's impossible to beat if you go BACKWARDS.
 		countdown: 200
-	},
-
-	// O
-	{
-		canvas:document.getElementById("canvas_3"),
-		player:{ x:30, y:75 },
-		door:{ x:270, y:75 },
-		key:{ x:150, y:270 },
-		circles: [
-			{x:150,y:150,radius:115}
-		],
-		rectangles: [
-			{}
-		],
-		countdown: 130
 	},
 
 	// M
 	{
 		canvas:document.getElementById("canvas_4"),
-		player:{ x:150, y:175 },
-		door:{ x:150, y:75 },
-		key:{ x:150, y:275 },
+		player:{ x:25, y:275 },
+		door:{ x:275, y:275 },
+		keys: [
+			{ x:150, y:155 }
+		],
 		circles: [
-			{}
+			{ x:90, y:120, radius: 25 },
+			{ x:110, y:180, radius: 40 },
+			{ x:150, y:180, radius:10, invisible:true},
+			{ x:190, y:180, radius: 40 },
+			{ x:210, y:120, radius: 25 }
 		],
-		rectangles: [
-			{x:30,y:150,width:50,height:100}
-		],
-		countdown:90
+		rectangles: [],
+		countdown:120
 	}
 ];
 
