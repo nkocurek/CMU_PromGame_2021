@@ -33,6 +33,7 @@ function Level(config,isIntro){
 	self.isIntro = isIntro;
 
 	self.circles = config.circles;
+	self.rectangles = config.rectangles;
 	self.player = new Peep(config.player,self);
 	self.key = new DoorKey(config.key, self);
 	self.door = new Door(config.door, self);
@@ -56,7 +57,7 @@ function Level(config,isIntro){
 
 	self.keyCollected = false;
 	self.update = function(){
-		
+
 		self.player.update();
 		self.key.update();
 
@@ -114,6 +115,15 @@ function Level(config,isIntro){
 			ctx.fill();
 		}
 
+		// Draw Rectangles
+		ctx.fillStyle = '#333';
+		for(var i=0;i<self.rectangles.length;i++){
+			var c = self.rectangles[i];
+			if(c.invisible) continue;
+			ctx.beginPath();
+			ctx.fillRect(c.x, c.y, c.width, c.height);
+		}
+
 		// Draw Peep, Key, Door in depth
 		objects.sort(function(a,b){ return a.y - b.y; });
 		for(var i=0;i<objects.length;i++){
@@ -140,7 +150,7 @@ function Level(config,isIntro){
 			pctx.moveTo(self.drawPathLastPoint.x, self.drawPathLastPoint.y);
 			pctx.lineTo(self.player.x, self.player.y);
 			pctx.stroke();
-	
+
 			self.drawPathLastPoint = {
 				x: self.player.x,
 				y: self.player.y
@@ -164,7 +174,7 @@ function Level(config,isIntro){
 
 	self.frames = [];
 	self.recordFrame = function(){
-		
+
 		var frame = {
 			player:{
 				x: self.player.x,
@@ -364,7 +374,7 @@ function Door(config,level){
 			var distance = Math.sqrt(dx*dx/25 + dy*dy);
 			if(distance<6){
 				if(level.isIntro){
-					
+
 					document.getElementById("whole_container").style.top = "-100%";
 
 					createjs.Sound.play("ding");
@@ -490,7 +500,7 @@ function Peep(config,level){
 			var distance = Math.sqrt(dx*dx + dy*dy);
 			var overlap = (circle.radius+5) - distance;
 			if(overlap>0){
-				
+
 				// Yes, I've been hit, by "overlap" pixels.
 				// Push me back
 				var ux = dx/distance;
@@ -500,6 +510,45 @@ function Peep(config,level){
 				self.x += pushX;
 				self.y += pushY;
 
+			}
+
+		}
+
+		// Dealing with collision of rEcTaNgLeS
+		// Hit a /rectangle/? Figure out how deep, then add that vector away from the non-circle.
+
+		for(var i=0;i<level.rectangles.length;i++){
+
+			var rect = level.rectangles[i];
+
+			var rx = rect.x + rect.width/2;
+			var ry = rect.y + rect.height/2; //wooooooo go kaz
+
+			var dx = self.x - rx;
+			var dy = self.y - ry;
+			var dtop = self.y - (ry - rect.height/2);
+			var dbottom = self.y - (ry + rect.height/2);
+			var dleft = self.x - (rx - rect.width/2);
+			var dright = self.x - (rx + rect.width/2);
+			if(rx - rect.width/2 < self.x && self.x < rx + rect.width/2) {
+				//Collide from top
+				if(dtop > 0 && self.y < ry) {
+					self.y -= 5;
+				}
+				//Collide from bottom
+				if(dbottom < 0 && self.y > ry) {
+					self.y += 5;
+				}
+			}
+			if(ry - rect.height/2 < self.y && self.y < ry + rect.height/2) {
+				//Collide from left
+				if(dleft > 0 && self.x < rx) {
+					self.x -= 5;
+				}
+				//Collide from right
+				if(dright < 0 && self.x > rx) {
+					self.x += 5;
+				}
 			}
 
 		}
@@ -520,12 +569,12 @@ function Peep(config,level){
 	var swayVel = 0;
 	var bouncy = [0.00, 0.25, 1.00, 0.90, 0.00, 0.00, 0.25, 1.00, 0.90, 0.00];
 	self.draw = function(ctx){
-		
+
 		var x = self.x;
 		var y = self.y;
 
 		// DRAW GOOFY BOUNCY DUDE //
-		
+
 		y += -6*bouncy[self.frame];
 
 		if(self.frame==4 || self.frame==9){
@@ -613,7 +662,7 @@ window.onload = function(){
 			if(STAGE==3 && !window.HAS_PLAYED_JAZZ){
 
 				if(STAGE==3 && CURRENT_LEVEL==1){
-					var framesLeft = (rewindLevel.frames.length-rewindFrame) + levelObjects[2].frames.length;
+					var framesLeft = (rewindLevel.frames.length-rewindFrame) + levelObjects[3].frames.length;
 					if(framesLeft<135){
 						window.HAS_PLAYED_JAZZ = true;
 						createjs.Sound.play("jazz");
@@ -658,7 +707,7 @@ window.onload = function(){
 				rewindFrame++;
 				if(rewindFrame>=rewindLevel.frames.length){
 					CURRENT_LEVEL++;
-					if(CURRENT_LEVEL<3){
+					if(CURRENT_LEVEL<4){
 						startPlayback();
 					}else{
 
@@ -709,11 +758,11 @@ function next(){
 	}else{
 		level = null;
 		STAGE = 2;
-		CURRENT_LEVEL = 2;
+		CURRENT_LEVEL = 3;
 		startRewind();
 
 
-		var totalFrames = levelObjects[0].frames.length + levelObjects[1].frames.length + levelObjects[2].frames.length;
+		var totalFrames = levelObjects[0].frames.length + levelObjects[1].frames.length + levelObjects[2].frames.length + levelObjects[3].frames.length;
 		var totalRewindTime = totalFrames/60;
 		var extraTime = 6600 - totalRewindTime*1000;
 		if(extraTime<0){
@@ -728,14 +777,14 @@ function next(){
 }
 
 function iHeartYou(){
-	
+
 	for(var i=0; i<levelObjects.length; i++) {
 		levelObjects[i].onlyPath();
 	}
 
 	document.getElementById("canvas_container").style.backgroundPosition = "0px -390px";
 	document.getElementById("screen_two").style.background = "#000";
-	
+
 	var can_cont_text = document.getElementById("canvas_container_text");
 
 	var vtext = document.getElementById("valentines_text");
@@ -751,7 +800,7 @@ function iHeartYou(){
 	},10);
 
 	// After 9 seconds, swipe down to CREDITS.
-	// No replay. Fuck it.
+	// No replay. Frick it.
 	setTimeout(function(){
 		document.getElementById("whole_container").style.top = "-200%";
 	},7300);
@@ -886,6 +935,9 @@ window.INTRO_LEVEL = {
 	key:{ x:cx, y:cy+125 },
 	circles: [
 		{x:cx,y:cy,radius:120,invisible:true}
+	],
+	rectangles: [
+		{}
 	]
 
 };
@@ -901,6 +953,9 @@ window.LEVEL_CONFIG = [
 		circles: [
 			{x:0,y:150,radius:100},
 			{x:300,y:150,radius:100}
+		],
+		rectangles: [
+			{}
 		],
 		countdown:90
 	},
@@ -918,6 +973,9 @@ window.LEVEL_CONFIG = [
 			{x:0,y:300,radius:145},
 			{x:300,y:300,radius:145}
 		],
+		rectangles: [
+			{}
+		],
 		// SUPER HACK - for level 2, change timer so it's impossible to beat if you go BACKWARDS.
 		countdown: 200
 	},
@@ -931,6 +989,9 @@ window.LEVEL_CONFIG = [
 		circles: [
 			{x:150,y:150,radius:115}
 		],
+		rectangles: [
+			{}
+		],
 		countdown: 130
 	},
 
@@ -941,8 +1002,10 @@ window.LEVEL_CONFIG = [
 		door:{ x:150, y:75 },
 		key:{ x:150, y:275 },
 		circles: [
-			{x:0,y:150,radius:100},
-			{x:300,y:150,radius:100}
+			{}
+		],
+		rectangles: [
+			{x:30,y:150,width:50,height:100}
 		],
 		countdown:90
 	}
