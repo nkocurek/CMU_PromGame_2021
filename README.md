@@ -10,6 +10,8 @@ please check out [my Patreon!](http://patreon.com/ncase) Thank you. <3
 
 ---
 
+This project was a modification of Nicky Case's original game, modifying the stages and some features to create a Promposal. Huge thank you to the original team for developing this for public domain.
+
 **Asset Credits:**
 
 * Jazz Music: http://www.newgrounds.com/audio/listen/522444 (CC-BY-NC)
